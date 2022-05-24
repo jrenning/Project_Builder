@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="styles.css">
+  <title>Document</title>
+</head>
+<body class="main-content">
+  <div class="landing-page">
+    <header class="landing-header">
+      <div class=landing"">
+        <h1>Project Creation</h1>
+      </div>
+    </header>
+    <div class="language-div">
+      <div class="landing-title">
+        <div class="block-left"></div>
+        <h3 class="language-title">Language Selection</h3>
+        <div class="block-right"></div>
+      </div>
+      <div class="controls">
+        <button class="button" data-id="python">
+          Python
+        </button>
+        <button class="button" data-id="javascript">
+          Javascript
+        </button>
+      </div>
+    </div>
+    <div class="settings">
+      <div class="setting-title">
+        <div class="block-left"></div>
+        <h3 class="setting-text">Settings</h3>
+        <div class="block-right"></div>
+      </div>
+      <div class="setting-controls">
+        <div class="theme-btn">
+          <i class="fas fa-adjust"></i>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <section class="section python" id="python">
+    <header class="landing-header">
+      <div class='back-arrow' data-id="back-arrow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <h1>Python Project</h1>
+    </header>
+    <div class="content">
+      <form class="setup-form" id="pysubmit">
+        <div class="text-input">
+          <input type="text" name="project-name" placeholder="Project Name" required=true>
+        </div>
+        <br>
+        <div class="folder-select">
+          <label>Existing Folder</label>
+          <button id="folder-existing-py">Pick Folder</button>
+          <h6 id="chosen-folder-py"></h6>
+        </div>
+        <br>
+        <div class="checkbox">
+          <label>Git Setup</label>
+          <input type="checkbox" name="git-setup">
+        </div>
+        <br>
+        <div class="text-input">
+          <input type="text" name="github-link" placeholder="Github Link">
+        </div>
+        <br>
+        <div class="checkbox">
+          <label>env Setup</label>
+          <input type="checkbox" name="env-setup">
+        </div>
+        <div class="pysubmit">
+          <input type="submit" value="Submit" onsubmit=pythonSubmission()>
+        </div>
+      </form>
+    </div>
+  </section>
+  <section class="section javascript" id="javascript">
+    <header class="landing-header">
+      <div class='back-arrow' data-id="back-arrow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <h1>Javascript Project</h1>
+    </header>
+    <div class="content">
+      <form class="setup-form" id="jssubmit">
+        <div class="text-input">
+          <input type="text" name="project-name"placeholder="Project Name" required=true>
+        </div>
+        <br>
+        <div class="folder-select">
+          <label>Existing Folder</label>
+          <button id="folder-existing-js">Pick Folder</button>
+          <h6 id="chosen-folder-js"></h6>
+        </div>
+        <br>
+        <div class="checkbox">
+          <label>Git Setup</label>
+          <input type="checkbox" name="git-setup">
+        <div>
+        <br>
+        <div class="text-input">
+          <input type="text" name="github-link" placeholder="Github Link">
+        </div>
+        <br>
+        <div class="submit">
+          <input type="submit" value="Submit">
+        </div>
+      </form>
+    </div>
+  </section>
+  
+</body>
+<script src="index.js"></script>
+</html>

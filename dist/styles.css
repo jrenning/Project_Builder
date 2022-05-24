@@ -1,0 +1,168 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --text-color: #FFFFFF;
+  --primary-color: #00171F;
+  --secondary-color: #00A7E1;
+  --button-hover-color: #ADD8E6;
+}
+
+.light-mode {
+  --primary-color: #dbe9f4;
+  --text-color:#00171F;
+}
+
+.theme-btn {
+  top: 10%;
+  right: 3%;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--button-hover-color);
+  cursor: pointer;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+.theme-btn:active {
+  transform: translateY(-5px);
+}
+
+body {
+  background-color: var(--primary-color);
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-color);
+}
+
+.section {
+  display: none;
+}
+
+.active {
+  display: block;
+  animation: scaleAnim 1s ease-in-out;
+}
+@keyframes scaleAnim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.back-arrow {
+  z-index: 10;
+}
+.back-arrow i {
+  pointer-events: none;
+  padding-right: 2rem;
+}
+
+.language-div {
+  margin-top: 105px;
+  overflow: hidden;
+}
+
+.landing-header {
+  background-color: var(--secondary-color);
+  font-size: large;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.block-left {
+  width: 50vw;
+  background-color: var(--secondary-color);
+  position: relative;
+  right: 50px;
+  height: 10px;
+  top: 18px;
+  overflow: hidden;
+}
+
+.block-right {
+  width: 50vw;
+  background-color: var(--secondary-color);
+  position: relative;
+  left: 50px;
+  height: 10px;
+  top: 18px;
+  overflow: hidden;
+}
+
+.landing-title {
+  display: flex;
+  margin: 25px;
+  text-align: center;
+  position: relative;
+  justify-content: center;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 4rem;
+}
+
+.button {
+  border-radius: 10px;
+  background-color: var(--secondary-color);
+  padding: 5px 10px;
+  color: var(--text-color);
+}
+.button:hover {
+  background-color: var(--button-hover-color);
+  color: var(--primary-color);
+}
+
+.setting-title {
+  display: flex;
+  margin-top: 4rem;
+}
+
+.settings {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4rem;
+}
+
+.setup-form {
+  background-color: var(--secondary-color);
+  padding: 0.5rem 2rem 3rem 3rem;
+  border-radius: 8px;
+}
+
+.pysubmit {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/*# sourceMappingURL=styles.css.map */
