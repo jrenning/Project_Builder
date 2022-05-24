@@ -58,6 +58,11 @@
             "name": "github-push-initial",
             "cmd": "git",
             "args": ["push", "-u", "origin", "main"]
+          },
+          {
+            "name": "vscode-open",
+            "cmd": "C:\\Users\\jacka\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code.cmd",
+            "args": true
           }
           ],
         "sidecar": true

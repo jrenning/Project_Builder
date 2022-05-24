@@ -8,11 +8,6 @@
 use std::fs::File;
 use std::fs::create_dir;
 
-/*fn main() {
-  tauri::Builder::default()
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
-}*/
 
 #[allow(non_snake_case)]
 #[tauri::command]
@@ -26,6 +21,7 @@ fn make_dir(dir: String, path: String){
   let file_path = format!("{}{}", path, dir);
   create_dir(file_path).expect("Directory could not be created");
 }
+
 
 
 fn main() {

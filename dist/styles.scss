@@ -152,10 +152,12 @@ body {
 // form setup 
 
 .content {
-    display: flex;
+    display: inline-block;
     align-items: center;
     justify-content: center;
     margin-top: 4rem;
+    width: auto;
+    transform: translateX(calc(50vw - 133px));
 }
 
 .setup-form {
@@ -164,11 +166,29 @@ body {
     border-radius: 8px;
 }
 
-.pysubmit {
+.submit {
     margin-top: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
     
+}
+
+
+.vscode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+    button {
+        border-radius: 10px;
+        background-color: var(--secondary-color);
+        padding: 5px 10px;
+        color: var(--text-color);
+        &:hover {
+            background-color: var(--button-hover-color);
+            color: var(--primary-color);
+        }
+    }
 }

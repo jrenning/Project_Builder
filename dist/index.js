@@ -75,6 +75,7 @@ PageTransitions()
 const chosen_folder_py = document.getElementById('chosen-folder-py')
 // global path variable that is used instead of the predefined project paths
 let new_path = ''
+let last_path_used = ''
 
 
 const py_submit = document.getElementById('pysubmit')
@@ -103,51 +104,22 @@ async function pythonSubmission (e) {
     // crate a main.py file in the new directory  
     let project_path = path + formProps['project-name'] + "\\"
     invoke('write_file', {fileName: 'main.py', dir: project_path})
+    // make nev if selected 
     if (formProps['env-setup'] == 'on') {
         console.log('Trying to make env...')
         const env_command  = await new Command("make_env", project_path, {cwd: project_path}).execute().catch(function(err) {
             console.log(err)
         }) 
     }
-    if (formProps['git-setup'] == 'on') {
-        console.log("Trying to set up git...")
-        const git_command = await new Command("git", project_path, {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        invoke('write_file', {fileName: '.gitignore', dir: project_path})
-    }
-    if (formProps['github-link']) {
-        console.log('Trying to connect to github...')
-        const git_add_command = await new Command("git-add-all", ['add', '.'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log('Added files to git...')
 
-        const git_commit_command = await new Command("git-commit", ['commit', '-m', 'Initial commit'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Committed files to git...")
+    // do github actions if they are turned on 
+    await githubActions(formProps['git-setup'], formProps['github-link'], project_path)
+    // ending message abd cleanup
+    endingMessage(formProps['project-name'], project_path)
 
-        const git_branch_command = await new Command("github-branch-rename", ['branch', '-M', 'main'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Renamed master branch to main...")
-
-        const git_connect_command = await new Command("github-link", ['remote', 'add', 'origin', formProps["github-link"]], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Connected repository to github...")
-        const git_push_initial = await new Command("github-push-initial", ['push', '-u', 'origin', 'main'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Pushed initial commit to github...")
-    }
-    
-    // set new_path back to default 
-    new_path = ''
-    // alert that project was created 
-    alert(`Project ${formProps['project-name']} was sucsessfully created at the path ${project_path}`)
 }
+
+// Javascript submissions 
 
 const js_submit = document.getElementById('jssubmit')
 js_submit.addEventListener("submit", javascriptSubmission)
@@ -182,14 +154,24 @@ async function javascriptSubmission(e) {
     invoke('write_file', {fileName: 'styles.css', dir: project_path})
     invoke('write_file', {fileName: 'styles.scss', dir: project_path})
 
-    if (formProps['git-setup'] == 'on') {
+    // do github actions if they are turned on 
+    await githubActions(formProps['git-setup'], formProps['github-link'], project_path)
+    endingMessage(formProps['project-name'], project_path)
+
+}
+
+
+// Helper functions for the different submissions 
+
+async function githubActions(git_setup, github_link, project_path) {
+    if (git_setup == 'on') {
         console.log("Trying to set up git...")
         const git_command = await new Command("git", project_path, {cwd: project_path}).execute().catch(function(err) {
             console.log(err)
         })
         invoke('write_file', {fileName: '.gitignore', dir: project_path})
     }
-    if (formProps['github-link']) {
+    if (github_link) {
         console.log('Trying to connect to github...')
         const git_add_command = await new Command("git-add-all", ['add', '.'], {cwd: project_path}).execute().catch(function(err) {
             console.log(err)
@@ -206,7 +188,7 @@ async function javascriptSubmission(e) {
         })
         console.log("Renamed master branch to main...")
 
-        const git_connect_command = await new Command("github-link", ['remote', 'add', 'origin', formProps["github-link"]], {cwd: project_path}).execute().catch(function(err) {
+        const git_connect_command = await new Command("github-link", ['remote', 'add', 'origin', github_link], {cwd: project_path}).execute().catch(function(err) {
             console.log(err)
         })
         console.log("Connected repository to github...")
@@ -215,49 +197,17 @@ async function javascriptSubmission(e) {
         })
         console.log("Pushed initial commit to github...")
     }
-    
+}
+
+function endingMessage(project_name, project_path) {
+    // set global last path used to path used 
+    last_path_used = project_path
+
     // set new_path back to default 
     new_path = ''
 
     //alert that project was made 
-    alert(`Project ${formProps['project-name']} was sucsessfully created at the path ${project_path}`)
-}
-
-
-async function githubActions() {
-    if (formProps['git-setup'] == 'on') {
-        console.log("Trying to set up git...")
-        const git_command = await new Command("git", project_path, {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        invoke('write_file', {fileName: '.gitignore', dir: project_path})
-    }
-    if (formProps['github-link']) {
-        console.log('Trying to connect to github...')
-        const git_add_command = await new Command("git-add-all", ['add', '.'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log('Added files to git...')
-
-        const git_commit_command = await new Command("git-commit", ['commit', '-m', 'Initial commit'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Committed files to git...")
-
-        const git_branch_command = await new Command("github-branch-rename", ['branch', '-M', 'main'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Renamed master branch to main...")
-
-        const git_connect_command = await new Command("github-link", ['remote', 'add', 'origin', formProps["github-link"]], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Connected repository to github...")
-        const git_push_initial = await new Command("github-push-initial", ['push', '-u', 'origin', 'main'], {cwd: project_path}).execute().catch(function(err) {
-            console.log(err)
-        })
-        console.log("Pushed initial commit to github...")
-    }
+    alert(`Project ${project_name} was sucsessfully created at the path ${project_path}`)
 }
 
 // Handling popup folder selection 
@@ -288,4 +238,22 @@ async function showFilesJs(e) {
     })
     new_path = result + '\\'
     chosen_folder_js.innerHTML = `Chosen folder: ${new_path}`
+}
+
+// handling vscode open 
+
+const vscode_open = document.querySelectorAll('.vscode-open')
+for (let i=0; i<vscode_open.length; i++) {
+    vscode_open[i].addEventListener("click", openVSCode)
+}
+
+async function openVSCode(e) {
+    e.preventDefault()
+    if (!last_path_used) {
+        alert("Project has not been created yet")
+        return 
+    }
+    const vscode_open = await new Command("vscode-open", ["-n", last_path_used]).execute().catch(function(err) {
+        console.log(err)
+    })
 }
