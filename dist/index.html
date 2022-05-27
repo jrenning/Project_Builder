@@ -39,6 +39,13 @@
         <h3 class="setting-text">Settings</h3>
         <div class="block-right"></div>
       </div>
+        <div class="path-settings">
+          <form class="setup-form" id="settings-submit">
+            <label>Set Python default path</label>
+            <input type="text" name="pypath"></input>
+            <input type="submit" value="submit">
+          </form>
+        </div>
       <div class="setting-controls">
         <div class="theme-btn">
           <i class="fas fa-adjust"></i>
@@ -72,7 +79,7 @@
         </div>
         <br>
         <div class="text-input">
-          <input type="text" name="github-link" placeholder="Github Link">
+          <input type="text" name="github-link" placeholder="Github Link" pattern="((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?">
         </div>
         <br>
         <div class="checkbox">
@@ -107,13 +114,17 @@
           <h6 id="chosen-folder-js"></h6>
         </div>
         <br>
-        <div class="checkbox">
+        <div class="checkbox git-setup">
           <label>Git Setup</label>
           <input type="checkbox" name="git-setup">
         </div>
+        <div class="checkbox">
+          <label>React</label>
+          <input type="checkbox" name="react" id="react">
+        </div>
         <br>
-        <div class="text-input">
-          <input type="text" name="github-link" placeholder="Github Link">
+        <div class="text-input github-link">
+          <input type="text" name="github-link" placeholder="Github Link" pattern="((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?">
         </div>
         <br>
         <div class="submit">

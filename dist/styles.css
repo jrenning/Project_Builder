@@ -138,10 +138,14 @@ body {
 
 .settings {
   overflow: hidden;
-  display: flex;
   align-items: center;
   text-align: center;
   justify-content: center;
+}
+
+.path-settings {
+  margin-top: 25px;
+  display: flex;
 }
 
 .content {

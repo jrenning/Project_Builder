@@ -4,6 +4,24 @@ const invoke = window.__TAURI__.invoke
 const Command = window.__TAURI__.shell.Command
 const open_dir = window.__TAURI__.dialog.open
 
+
+
+// create settings file should only happen once 
+invoke('write_file', {fileName: 'settings.json', dir: 'C:\\Projects\\Tauri\\test\\'})
+
+settings = document.querySelector('#settings-submit')
+settings.addEventListener("submit", updateSettings)
+
+async function updateSettings(e) {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const formProps = Object.fromEntries(formData)
+    path = 'C:\\Projects\\Tauri\\testsettings.json'
+    contents = 'Hello'
+    invoke('write_to_file', {path: path, contents: contents})
+    console.log('wrote to file')
+}
+
 const sections = document.querySelectorAll('.section')
 const sectionButtons = document.querySelectorAll('.controls')
 const sectionButton = document.querySelectorAll('.button')
@@ -92,7 +110,6 @@ async function pythonSubmission (e) {
 
     // checks if other folder was chosen
     if (chosen_folder_py.innerHTML) {
-        console.log(chosen_folder_py.innerHTML)
         // makes sure not to set path as a null folder 
         if (chosen_folder_py.innerHTML !== 'Chosen folder: null\\') {
             path = new_path
@@ -103,7 +120,17 @@ async function pythonSubmission (e) {
     invoke('make_dir', {dir: formProps['project-name'], path: path})
     // crate a main.py file in the new directory  
     let project_path = path + formProps['project-name'] + "\\"
-    invoke('write_file', {fileName: 'main.py', dir: project_path})
+
+    const file_creation = await invoke('write_file', {fileName: 'main.py', dir: project_path}).then().catch(function(err) {
+        console.log(err)
+    })
+    // runs if file already exists 
+    if (!file_creation) {
+        alert('Project already exists')
+        new_path = ''
+        return
+    }
+
     // make nev if selected 
     if (formProps['env-setup'] == 'on') {
         console.log('Trying to make env...')
@@ -148,8 +175,15 @@ async function javascriptSubmission(e) {
     // crate a main.py file in the new directory  
     let project_path = path + formProps['project-name'] + "\\"
 
-    // make javascript basic files 
-    invoke('write_file', {fileName: 'index.html', dir: project_path})
+    const file_creation = await invoke('write_file', {fileName: 'main.py', dir: project_path}).then().catch(function(err) {
+        console.log(err)
+    })
+    // runs if file already exists 
+    if (!file_creation) {
+        alert('Project already exists')
+        new_path = ''
+        return
+    }
     invoke('write_file', {fileName: 'index.js', dir: project_path})
     invoke('write_file', {fileName: 'styles.css', dir: project_path})
     invoke('write_file', {fileName: 'styles.scss', dir: project_path})
@@ -256,4 +290,22 @@ async function openVSCode(e) {
     const vscode_open = await new Command("vscode-open", ["-n", last_path_used]).execute().catch(function(err) {
         console.log(err)
     })
+}
+
+// handling react hide 
+const react = document.getElementById('react')
+react.addEventListener("click", hideGit)
+
+function hideGit() {
+    const git_setup = document.querySelector('.git-setup')
+    const github_link = document.querySelector('.github-link')
+    console.log(git_setup)
+    if (git_setup.classList.contains('hidden')) {
+        git_setup.classList.remove('hidden')
+        github_link.classList.remove('hidden')
+    }
+    else {
+        git_setup.classList.add('hidden')
+        github_link.classList.add('hidden')
+    }   
 }
