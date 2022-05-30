@@ -1,8 +1,4 @@
 
-const invoke = window.__TAURI__.invoke
-const Command = window.__TAURI__.shell.Command
-const open_dir = window.__TAURI__.dialog.open
-
 /* Basic Settings*/
 
 
