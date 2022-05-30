@@ -149,8 +149,26 @@ body {
 }
 
 .path-settings {
-    margin-top: 25px;
     display: flex;
+    justify-content: space-evenly;
+    margin-top: 60px;
+}
+
+.setting-block {
+    background-color: var(--secondary-color);
+    margin: 0 10px;
+    border-radius: 10px;
+    box-shadow: 2px 4px 2px 0 rgba(0,0,0,0.3);
+    display: inline-block;
+    padding: 5px;
+    input {
+        border-radius: 8px;
+        padding: 3px;
+        &:hover {
+            background-color: var(--button-hover-color);
+
+        }
+    }
 }
 
 // form setup 

@@ -40,10 +40,15 @@
         <div class="block-right"></div>
       </div>
         <div class="path-settings">
-          <form class="setup-form" id="settings-submit">
+          <form class="setting-block" id="settings-submit-python">
             <label>Set Python default path</label>
-            <input type="text" name="pypath"></input>
-            <input type="submit" value="submit">
+            <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
+            <input type="submit" value="Choose Path">
+          </form>
+          <form class="setting-block" id="settings-submit-javascript">
+            <label>Set Javascript default path</label>
+            <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
+            <input type="submit" value="Choose Path">
           </form>
         </div>
       <div class="setting-controls">
@@ -87,7 +92,7 @@
           <input type="checkbox" name="env-setup">
         </div>
         <div class="submit">
-          <input type="submit" value="Submit" onsubmit=pythonSubmission()>
+          <input type="submit" value="submit" onsubmit=pythonSubmission()>
         </div>
       </form>
       <div class="vscode">
@@ -138,5 +143,6 @@
   </section>
   
 </body>
+<script src="settings.js"></script>
 <script src="index.js"></script>
 </html>

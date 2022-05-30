@@ -1,26 +1,23 @@
 
+
 // With the Tauri global script, enabled when `tauri.conf.json > build > withGlobalTauri` is set to true:
 const invoke = window.__TAURI__.invoke
 const Command = window.__TAURI__.shell.Command
 const open_dir = window.__TAURI__.dialog.open
 
 
-
 // create settings file should only happen once 
-invoke('write_file', {fileName: 'settings.json', dir: 'C:\\Projects\\Tauri\\test\\'})
+invoke('write_file', {fileName: 'settings.json' , dir: "C:\\Projects\\Tauri\\test\\"})
 
-settings = document.querySelector('#settings-submit')
-settings.addEventListener("submit", updateSettings)
+// get settings from settings.json
+async function readSettings(settingType, language, key) {
+    const read_settings = await invoke('read_settings', {key: key, settingType: settingType, language: language}).then().catch(function(err) {
+        console.log(err)
+    }) 
 
-async function updateSettings(e) {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    const formProps = Object.fromEntries(formData)
-    path = 'C:\\Projects\\Tauri\\testsettings.json'
-    contents = 'Hello'
-    invoke('write_to_file', {path: path, contents: contents})
-    console.log('wrote to file')
+    return read_settings
 }
+
 
 const sections = document.querySelectorAll('.section')
 const sectionButtons = document.querySelectorAll('.controls')
@@ -87,6 +84,14 @@ function PageTransitions () {
 
 PageTransitions()
 
+
+
+
+/* Form Submissions*/
+
+
+
+
 // selector to help show the chosen folder path for 
 // existing folder selection, used to check if path
 // needs to be changed as well
@@ -106,7 +111,8 @@ async function pythonSubmission (e) {
     // get form data 
     const formData = new FormData(e.target)
     const formProps = Object.fromEntries(formData)
-    let path = 'C:\\Projects\\Python\\'
+    let path = await readSettings("path", "python", "path")
+    console.log(path)
 
     // checks if other folder was chosen
     if (chosen_folder_py.innerHTML) {
@@ -252,6 +258,10 @@ const file_show_js = document.getElementById('folder-existing-js')
 file_show_js.addEventListener("click", showFilesJs)
 
 
+
+/* Showing file structure*/
+
+
 async function showFilesPy(e) {
     e.preventDefault()
 
@@ -274,6 +284,11 @@ async function showFilesJs(e) {
     chosen_folder_js.innerHTML = `Chosen folder: ${new_path}`
 }
 
+
+/* Other Components*/
+
+
+
 // handling vscode open 
 
 const vscode_open = document.querySelectorAll('.vscode-open')
@@ -287,6 +302,7 @@ async function openVSCode(e) {
         alert("Project has not been created yet")
         return 
     }
+    // open vscode to path of the last created project 
     const vscode_open = await new Command("vscode-open", ["-n", last_path_used]).execute().catch(function(err) {
         console.log(err)
     })
@@ -298,14 +314,11 @@ react.addEventListener("click", hideGit)
 
 function hideGit() {
     const git_setup = document.querySelector('.git-setup')
-    const github_link = document.querySelector('.github-link')
     console.log(git_setup)
     if (git_setup.classList.contains('hidden')) {
         git_setup.classList.remove('hidden')
-        github_link.classList.remove('hidden')
     }
     else {
         git_setup.classList.add('hidden')
-        github_link.classList.add('hidden')
     }   
 }
