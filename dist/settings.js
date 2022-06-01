@@ -17,11 +17,14 @@ async function updateSettingsPython(e) {
     let result = await open_dir({defaultPath: path, directory: true, multiple: false}).catch(function(err) {
         console.log(err)
     })
-    // add trailing slash to go into folder
-    result = result + '\\'
-    invoke('write_to_path_settings', {key: "python", contents: result, settingType: "path"}).catch(function(err) {
+    // go into the directory
+    result = result + "\\"
+    // update path settings
+    invoke('write_to_path_settings', {language: "python", contents: result, settingType: "path", key: "path"}).catch(function(err) {
         console.log(err)
     })
+    displayPathSettings("python")
+    displayPathSettings("javascript")
 }
 
 
@@ -34,9 +37,13 @@ async function updateSettingsJavascript(e) {
     })
     // add trailing slash to go into folder
     result = result + '\\'
-    invoke('write_to_path_settings', {key: "javascript", contents: result, settingType: "path"}).catch(function(err) {
+    // update path settings
+    invoke('write_to_path_settings', {key: "path", contents: result, settingType: "path", langauge: "javascript"}).catch(function(err) {
         console.log(err)
     })
+    
+    displayPathSettings("python")
+    displayPathSettings("javascript")
 }
 
 

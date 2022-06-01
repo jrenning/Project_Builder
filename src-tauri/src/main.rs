@@ -8,8 +8,8 @@
 use std::fs::File;
 use std::fs::create_dir;
 use std::path::Path;
-use std::fs;
 use serde_derive::{Deserialize, Serialize};
+use std::ops::{Index, IndexMut};
 
 // tauri and rust seem to have an error that doesn't allow underscore names to be passed
 // to the frontend so camelcase is used 
@@ -37,7 +37,7 @@ fn make_dir(dir: String, path: String) -> bool{
   return true;
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 struct PathSettings {
   path_type: String,
   path: String,
@@ -54,7 +54,72 @@ struct Settings {
   pathsettings: Vec<PathSetters>
 }
 
+// allows for indexing of Settings
+impl Index<&'_ str> for Settings {
+  type Output = Vec<PathSetters>;
+  fn index(&self, s: &str) -> &Vec<PathSetters> {
+    match s {
+      "pathsettings" => &self.pathsettings,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
 
+// allows for mutations using indexes of settings 
+impl IndexMut<&'_ str> for Settings {
+  fn index_mut(&mut self, s: &str) -> &mut Vec<PathSetters> {
+    match s {
+      "pathsettings" => &mut self.pathsettings,
+      _ => panic!("unknown field: {}", s)
+    }
+  }
+}
+
+// allows for indexing of path settings
+impl Index<&'_ str> for PathSetters {
+  type Output = Vec<PathSettings>;
+  fn index(&self, s: &str) -> &Vec<PathSettings> {
+    match s {
+      "python" => &self.python,
+      "javascript" => &self.javascript,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
+
+// allows for mutations using indexes of settings 
+impl IndexMut<&'_ str> for PathSetters {
+  fn index_mut(&mut self, s: &str) -> &mut Vec<PathSettings> {
+    match s {
+      "python" => &mut self.python,
+      "javascript" => &mut self.javascript,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
+
+// allows for indexing of path settings components 
+impl Index<&'_ str> for PathSettings {
+  type Output = String;
+  fn index(&self, s: &str) -> &String {
+    match s {
+      "path_type" => &self.path_type,
+      "path" => &self.path,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
+
+// allows for mutations using indexes of settings 
+impl IndexMut<&'_ str> for PathSettings {
+  fn index_mut(&mut self, s: &str) -> &mut String {
+    match s {
+      "path_type" => &mut self.path_type,
+      "path" => &mut self.path,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
 
 
 
@@ -63,7 +128,7 @@ struct Settings {
 // to the frontend so camelcase is used 
 #[allow(non_snake_case)]
 #[tauri::command]
-fn write_to_path_settings(key: String, contents: String, settingType: String) {
+fn write_to_path_settings(key: String, contents: String, settingType: String, language: String) {
 
   // remember to change to right path 
   let input_path = "C:\\Projects\\Tauri\\test\\settings.json";
@@ -75,48 +140,32 @@ fn write_to_path_settings(key: String, contents: String, settingType: String) {
   };
 
   if settingType == "path" {
-
-    if key == "python" {
-
-      for index in 0..settings.pathsettings.len() {
-        settings.pathsettings[index].python[index].path = contents.to_string();
-      };
-    };
-
-    std::fs::write(
-      input_path,
-      serde_json::to_string_pretty(&settings).unwrap()
-    );
-
+    settings["pathsettings"][0][&language][0][&key] = contents.to_string();
   }
+
+  std::fs::write(
+  input_path,
+  serde_json::to_string_pretty(&settings).unwrap()
+  ).expect("Bad write to file");  
 
 }
 
+#[allow(non_snake_case)]
 #[tauri::command]
-fn read_settings(key: String, settingType: String, language: String) -> String {
+fn read_settings(key: String, settingType: String, language: String) -> String{
   // remember to change to right path 
   let input_path = "C:\\Projects\\Tauri\\test\\settings.json";
 
-  let mut settings = std::fs::read_to_string(&input_path).unwrap();
+  let settings = std::fs::read_to_string(&input_path).unwrap();
 
   let settings: Settings = serde_json::from_str(&settings).unwrap();
 
   if settingType == "path" {
-
-    if language == "python" {
-      if key == "path" {
-        println!("{:?}",settings.pathsettings[0].python[0].path.to_string());
-        return settings.pathsettings[0].python[0].path.to_string();
-      };
-    };
-    if language == "javascript" {
-      if key == "path" {
-        return settings.pathsettings[0].javascript[0].path.to_string();
-      };
-    };
-  };
-  
-  return "null".to_string();
+    return settings["pathsettings"][0][&language][0][&key].clone();
+  }
+  else {
+    return "null".to_string();
+  }
 
 }
 

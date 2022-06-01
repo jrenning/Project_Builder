@@ -44,11 +44,18 @@
             <label>Set Python default path</label>
             <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
             <input type="submit" value="Choose Path">
+            <div class="current-default">
+              <h4 id="python-default"></h4>
+            </div>
           </form>
+
           <form class="setting-block" id="settings-submit-javascript">
             <label>Set Javascript default path</label>
             <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
             <input type="submit" value="Choose Path">
+            <div class="current-default">
+              <h4 id="javascript-default"></h4>
+            </div>
           </form>
         </div>
       <div class="setting-controls">
@@ -143,6 +150,5 @@
   </section>
   
 </body>
-<script src="settings.js"></script>
 <script src="index.js"></script>
 </html>

@@ -8,6 +8,7 @@
   --primary-color: #00171F;
   --secondary-color: #00A7E1;
   --button-hover-color: #ADD8E6;
+  --display-text-color: rgb(101, 15, 126);
 }
 
 .light-mode {
@@ -163,6 +164,11 @@ body {
 }
 .setting-block input:hover {
   background-color: var(--button-hover-color);
+}
+
+.current-default {
+  margin-top: 20px;
+  color: var(--display-text-color);
 }
 
 .content {

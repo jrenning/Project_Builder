@@ -5,9 +5,30 @@ const invoke = window.__TAURI__.invoke
 const Command = window.__TAURI__.shell.Command
 const open_dir = window.__TAURI__.dialog.open
 
+// languages supported 
+const languages = ["python", "javascript"]
 
-// create settings file should only happen once 
-invoke('write_file', {fileName: 'settings.json' , dir: "C:\\Projects\\Tauri\\test\\"})
+/* Basic Settings*/
+
+
+
+
+function initializeSettings() {
+    // create settings file should only happen once 
+    invoke('write_file', {fileName: 'settings.json' , dir: "C:\\Projects\\Tauri\\test\\"})
+
+    // initial display of path settings
+    for (let i=0; i<languages.length; i++) {
+        displayPathSettings(languages[i])
+    }
+    // set up updating 
+    for (let i=0; i<languages.length; i++) {
+        selector = "settings-submit-" + languages[i]
+        settings = document.getElementById(selector)
+        settings.addEventListener("submit", updateSettings(languages[i]))
+    }
+}
+
 
 // get settings from settings.json
 async function readSettings(settingType, language, key) {
@@ -18,6 +39,36 @@ async function readSettings(settingType, language, key) {
     return read_settings
 }
 
+// display current path settings 
+async function displayPathSettings(language) {
+    let selector = language + '-default'
+    let text = await readSettings("path", language, "path")
+    document.getElementById(selector).innerHTML = 'Current Path:' + text
+}
+
+
+let updateSettings = function(language) {
+    return async function curried_func(e) {
+        e.preventDefault()
+        path = 'C:/'
+        let result = await open_dir({defaultPath: path, directory: true, multiple: false}).catch(function(err) {
+            console.log(err)
+        })
+        // go into the directory
+        result = result + "\\"
+        // update path settings
+        invoke('write_to_path_settings', {language: language, contents: result, settingType: "path", key: "path"}).catch(function(err) {
+            console.log(err)
+        })
+        displayPathSettings(language)
+    }
+}
+
+initializeSettings()
+
+/* Transitions and Theme*/
+
+
 
 const sections = document.querySelectorAll('.section')
 const sectionButtons = document.querySelectorAll('.controls')
@@ -25,7 +76,7 @@ const sectionButton = document.querySelectorAll('.button')
 const allSections = document.querySelector('.main-content')
 const landing_page = document.querySelector('.landing-page')
 
-// toggle themme 
+// toggle theme 
 const themeBtn = document.querySelector('.theme-btn')
 
 themeBtn.addEventListener('click', ()=> {
@@ -33,6 +84,7 @@ themeBtn.addEventListener('click', ()=> {
     element.classList.toggle('light-mode')
 })
 
+// page transitions
 function PageTransitions () {
     allSections.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
@@ -111,8 +163,8 @@ async function pythonSubmission (e) {
     // get form data 
     const formData = new FormData(e.target)
     const formProps = Object.fromEntries(formData)
+    // get default path from settings
     let path = await readSettings("path", "python", "path")
-    console.log(path)
 
     // checks if other folder was chosen
     if (chosen_folder_py.innerHTML) {
@@ -166,7 +218,7 @@ async function javascriptSubmission(e) {
     // get form data 
     const formData = new FormData(e.target)
     const formProps = Object.fromEntries(formData)
-    let path = 'C:\\Projects\\Javascript\\'
+    let path = await readSettings("path", "javascript", "path")
 
     // checks if other folder was chosen
     if (chosen_folder_js.innerHTML) {
