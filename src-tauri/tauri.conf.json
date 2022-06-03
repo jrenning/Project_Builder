@@ -63,6 +63,11 @@
             "name": "vscode-open",
             "cmd": "C:\\Users\\jacka\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code.cmd",
             "args": true
+          },
+          {
+            "name": "react-app",
+            "cmd": "C:\\Users\\jacka\\AppData\\Roaming\\npm\\npx.cmd",
+            "args": true
           }
           ],
         "sidecar": true

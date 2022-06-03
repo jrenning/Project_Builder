@@ -180,7 +180,34 @@ let ProjectSubmission  = function(language) {
                 path = new_path
             }
         }
-        console.log(`Path after change? ${path}`)
+        console.log(language)
+        // checks for javascript language to avoid key error on react
+        if (language == "javascript") {
+            if (formProps['react'] == 'on') {
+
+                // make sure npm rules are followed 
+                const upperCase = (string) => /[A-Z]/.test(string)
+                if (upperCase(formProps['project-name'])) {
+                    alert('Project name must not contain a capital letter (npm rules)')
+                    return
+                }
+
+                const react_command  = await new Command("react-app", ["create-react-app", formProps['project-name']], {cwd: path}).execute().catch(function(err) {
+                console.log(err)
+                })
+                console.log(react_command)
+ 
+ 
+                // alert if project not created 
+                if (typeof react_command == 'undefined') {
+                    alert('Project could not be created, check internet connection and make sure npm is installed in the default area')
+                    return
+                }
+                // send message and stop loop as everything else is handled by react
+                alert(`React project ${formProps['project-name']} created at ${path}`)
+                return
+            }
+        }
         // make a directory with the project name 
         invoke('make_dir', {dir: formProps['project-name'], path: path})
         // create a file in the new directory  
