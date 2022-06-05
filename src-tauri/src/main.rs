@@ -37,6 +37,16 @@ fn make_dir(dir: String, path: String) -> bool{
   return true;
 }
 
+// settings structs
+
+
+
+#[derive(Deserialize, Serialize, Debug)]
+struct OverallSettings {
+  path_settings: PathSetters,
+  file_structure_settings: FileSetters
+}
+
 #[derive(Deserialize, Serialize, Debug, Clone)]
 struct PathSettings {
   path_type: String,
@@ -49,31 +59,21 @@ struct PathSetters {
   javascript: Vec<PathSettings>,
 }
 
+// file settings 
 #[derive(Deserialize, Serialize, Debug)]
-struct Settings {
-  pathsettings: Vec<PathSetters>
+struct FileSetters {
+  python: Vec<String>,
+  javascript: Vec<String>
 }
 
-// allows for indexing of Settings
-impl Index<&'_ str> for Settings {
-  type Output = Vec<PathSetters>;
-  fn index(&self, s: &str) -> &Vec<PathSetters> {
-    match s {
-      "pathsettings" => &self.pathsettings,
-      _ => panic!("unknown field: {}", s),
-    }
-  }
+#[derive(Deserialize, Serialize, Debug)]
+struct FileSettings {
+  file_structure_settings: FileSetters
 }
 
-// allows for mutations using indexes of settings 
-impl IndexMut<&'_ str> for Settings {
-  fn index_mut(&mut self, s: &str) -> &mut Vec<PathSetters> {
-    match s {
-      "pathsettings" => &mut self.pathsettings,
-      _ => panic!("unknown field: {}", s)
-    }
-  }
-}
+
+
+// methods for indexing and mutating settings structs 
 
 // allows for indexing of path settings
 impl Index<&'_ str> for PathSetters {
@@ -122,13 +122,34 @@ impl IndexMut<&'_ str> for PathSettings {
 }
 
 
+impl Index<&'_ str> for FileSetters {
+  type Output = Vec<String>;
+  fn index(&self, s: &str) -> &Vec<String> {
+    match s {
+      "python" => &self.python,
+      "javascript" => &self.javascript,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
+
+// allows for mutations using indexes of settings 
+impl IndexMut<&'_ str> for FileSetters {
+  fn index_mut(&mut self, s: &str) -> &mut Vec<String> {
+    match s {
+      "python" => &mut self.python,
+      "javascript" => &mut self.javascript,
+      _ => panic!("unknown field: {}", s),
+    }
+  }
+}
 
 
 // tauri and rust seem to have an error that doesn't allow underscore names to be passed
 // to the frontend so camelcase is used 
 #[allow(non_snake_case)]
 #[tauri::command]
-fn write_to_path_settings(key: String, contents: String, settingType: String, language: String) {
+fn write_to_path_settings(key: String, contents: String, language: String) {
 
   // remember to change to right path 
   let input_path = "C:\\Projects\\Tauri\\test\\settings.json";
@@ -136,12 +157,11 @@ fn write_to_path_settings(key: String, contents: String, settingType: String, la
   let mut settings = {
     // read from settings file in correct format specified by the structs
     let settings = std::fs::read_to_string(&input_path).unwrap();
-    serde_json::from_str::<Settings>(&settings).unwrap()
+    serde_json::from_str::<OverallSettings>(&settings).unwrap()
   };
 
-  if settingType == "path" {
-    settings["pathsettings"][0][&language][0][&key] = contents.to_string();
-  }
+  settings.path_settings[&language][0][&key] = contents.to_string();
+
 
   std::fs::write(
   input_path,
@@ -152,31 +172,69 @@ fn write_to_path_settings(key: String, contents: String, settingType: String, la
 
 #[allow(non_snake_case)]
 #[tauri::command]
-fn read_settings(key: String, settingType: String, language: String) -> String{
+fn read_settings(key: String, inputPath: String, language: String) -> String{
   // remember to change to right path 
-  let input_path = "C:\\Projects\\Tauri\\test\\settings.json";
+  //let settings = std::fs::read_to_string(&input_path).unwrap();
+  let settings = {
+    // read from settings file in correct format specified by the structs
+    let settings = std::fs::read_to_string(&inputPath).unwrap();
+    serde_json::from_str::<OverallSettings>(&settings).unwrap()
+  };
 
-  let settings = std::fs::read_to_string(&input_path).unwrap();
-
-  let settings: Settings = serde_json::from_str(&settings).unwrap();
-
-  if settingType == "path" {
-    return settings["pathsettings"][0][&language][0][&key].clone();
-  }
-  else {
-    return "null".to_string();
-  }
+  return settings.path_settings[&language][0][&key].clone();
 
 }
 
+#[allow(non_snake_case)]
+#[tauri::command]
+fn read_file_settings(language: String, inputPath: String) -> Vec<String> {
 
+  let file_settings = {
+  // read from settings file in correct format specified by the structs
+  let file_settings = std::fs::read_to_string(&inputPath).unwrap();
+  serde_json::from_str::<FileSettings>(&file_settings).unwrap()
+  };
+  return file_settings.file_structure_settings[&language].clone();
+}
 
+#[allow(non_snake_case)]
+#[tauri::command]
+fn write_file_settings(language: String, inputPath: String, operation: String, file: &str) -> bool {
+  let mut file_settings = {
+  // read from settings file in correct format specified by the structs
+  let file_settings = std::fs::read_to_string(&inputPath).unwrap();
+  serde_json::from_str::<OverallSettings>(&file_settings).unwrap()
+  };
+
+  if operation == "add" {
+    file_settings.file_structure_settings[&language].push(file.to_string());
+  }
+
+  // error handling 
+  else if file_settings.file_structure_settings[&language].contains(&file.to_string()) {
+    if operation == "delete" {
+      let file = &file;
+      let index = file_settings.file_structure_settings[&language].iter().position(|x| x == file).expect("File not found in list");
+      file_settings.file_structure_settings[&language].remove(index);
+    }
+  }
+  else {
+    return false;
+  }
+
+  std::fs::write(
+  inputPath,
+  serde_json::to_string_pretty(&file_settings).unwrap()
+  ).expect("Bad write to file");
+
+  return true;
+}
 
 
 fn main() {
   tauri::Builder::default()
     // This is where you pass in your commands
-    .invoke_handler(tauri::generate_handler![write_file, make_dir, write_to_path_settings, read_settings])
+    .invoke_handler(tauri::generate_handler![write_file, make_dir, write_to_path_settings, read_settings, read_file_settings, write_file_settings])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 }

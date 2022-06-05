@@ -39,25 +39,14 @@
         <h3 class="setting-text">Settings</h3>
         <div class="block-right"></div>
       </div>
-        <div class="path-settings">
-          <form class="setting-block" id="settings-submit-python">
-            <label>Set Python default path</label>
-            <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
-            <input type="submit" value="Choose Path">
-            <div class="current-default">
-              <h4 id="python-default"></h4>
-            </div>
-          </form>
-
-          <form class="setting-block" id="settings-submit-javascript">
-            <label>Set Javascript default path</label>
-            <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
-            <input type="submit" value="Choose Path">
-            <div class="current-default">
-              <h4 id="javascript-default"></h4>
-            </div>
-          </form>
-        </div>
+      <div class="controls">
+        <button class="button" data-id="path">
+          Path Settings
+        </button>
+        <button class="button" data-id="files">
+          File Settings
+        </button>
+      </div>
       <div class="setting-controls">
         <div class="theme-btn">
           <i class="fas fa-adjust"></i>
@@ -66,6 +55,60 @@
     </div>
     
   </div>
+  <section class="section path_setting" id="path">
+    <header class="landing-header">
+      <div class='back-arrow' data-id="back-arrow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <h1>Path Settings</h1>
+    </header>
+    <div class="path-settings">
+      <form class="setting-block" id="settings-submit-python">
+        <label>Set Python default path</label>
+        <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
+        <input type="submit" value="Choose Path">
+        <div class="current-default">
+          <h4 id="python-default"></h4>
+        </div>
+      </form>
+      <form class="setting-block" id="settings-submit-javascript">
+        <label>Set Javascript default path</label>
+        <!--<input type="text" name="path_setting" pattern="[a-zA-Z]:[\\\/](?:[a-zA-Z0-9]+[\\\/])*([a-zA-Z0-9]+)"></input>-->
+        <input type="submit" value="Choose Path">
+        <div class="current-default">
+          <h4 id="javascript-default"></h4>
+        </div>
+      </form>
+    </div>
+  </section>
+  <section class="section files" id="files">
+    <header class="landing-header">
+      <div class='back-arrow' data-id="back-arrow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <h1>File Settings</h1>
+    </header>
+    <div class="file_settings">
+      <form class="setting-block" id="files-submit-python">
+        <label>Set Python file list</label>
+        <input type="text" name="file-setting"></input>
+        <input type="checkbox" name="delete-file">Delete Entry?</input>
+        <input type="submit" value="Set Files">
+        <div class="current-list">
+          <h4 id="python-list"></h4>
+        </div>
+      </form>
+      <form class="setting-block" id="files-submit-javascript">
+        <label>Set Javascript file list</label>
+        <input type="text" name="file_setting"></input>
+        <input type="checkbox" name="delete-file">Delete Entry?</input>
+        <input type="submit" value="Set Files">
+        <div class="current-list">
+          <h4 id="javascript-list"></h4>
+        </div>
+      </form>
+    </div>
+  </section>
   <section class="section python" id="python">
     <header class="landing-header">
       <div class='back-arrow' data-id="back-arrow">

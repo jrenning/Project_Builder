@@ -144,7 +144,7 @@ body {
   justify-content: center;
 }
 
-.path-settings {
+.path-settings, .file_settings {
   display: flex;
   justify-content: space-evenly;
   margin-top: 60px;

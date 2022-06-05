@@ -17,7 +17,7 @@
       "shell": {
         "all": true,
         "execute": true,
-        "open": true,
+        "open": "^(C:.*|\\.*)",
         "scope": [
           {
           "name": "cd",
@@ -97,7 +97,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": ["C:\\Projects\\Tauri\\test\\settings.json"],
       "shortDescription": "",
       "targets": "all",
       "windows": {

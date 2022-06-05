@@ -1,0 +1,21 @@
+{
+  "pathsettings": [{
+    "python":[{
+      "path": "C:\\Projects\\Python\\",
+      "path_type": "default"
+    }],
+    "javascript":[{
+      "path": "C:\\Projects\\Javascript\\",
+      "path_type": "default"
+    }]
+  }],
+  "file_structure_settings": {
+    "python": [
+      "main.py",
+      "config.py"
+    ],
+    "javascript": [
+      "index.html"
+    ]
+  }
+}
