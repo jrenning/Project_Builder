@@ -68,6 +68,11 @@
             "name": "react-app",
             "cmd": "C:\\Users\\jacka\\AppData\\Roaming\\npm\\npx.cmd",
             "args": true
+          },
+          {
+            "name": "cargo-new",
+            "cmd": "cargo",
+            "args": ["new", { "validator": "\\S+" }]
           }
           ],
         "sidecar": true
@@ -97,7 +102,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": ["C:\\Projects\\Tauri\\test\\settings.json"],
+      "resources": [],
       "shortDescription": "",
       "targets": "all",
       "windows": {

@@ -1,4 +1,4 @@
-// With the Tauri global script, enabled when `tauri.conf.json > build > withGlobalTauri` is set to true:
+//With the Tauri global script, enabled when `tauri.conf.json > build > withGlobalTauri` is set to true:
 const invoke = window.__TAURI__.invoke;
 const Command = window.__TAURI__.shell.Command;
 const open_dir = window.__TAURI__.dialog.open;
@@ -6,12 +6,14 @@ const path_operations = window.__TAURI__.path;
 const shell = window.__TAURI__.shell;
 
 // languages supported
-const languages = ["python", "javascript"];
+const languages = ["python", "javascript", "rust"];
+
+const settings_path = "C:\\Projects\\Tauri\\test\\dist\\settings.json";
 
 /* Basic Settings*/
 
 function initializeSettings() {
-  // create settings file should only happen once
+  //create settings file should only happen once
   invoke("write_file", {
     fileName: "settings.json",
     dir: "C:\\Projects\\Tauri\\test\\",
@@ -21,6 +23,12 @@ function initializeSettings() {
   for (let i = 0; i < languages.length; i++) {
     displayPathSettings(languages[i]);
   }
+
+  //initial display of file settings
+  for (let i = 0; i < languages.length; i++) {
+    displayfileSettings(languages[i]);
+  }
+
   // set up updating
   for (let i = 0; i < languages.length; i++) {
     selector = "settings-submit-" + languages[i];
@@ -52,15 +60,16 @@ async function readSettings(input_path, language, key) {
 }
 
 async function readfileSettings(language, input_path) {
-    const read_files = await invoke("read_file_settings", 
-    {language: language,
-    inputPath: input_path})
+  const read_files = await invoke("read_file_settings", {
+    language: language,
+    inputPath: input_path,
+  })
     .then()
-    .catch(function(err) {
-        console.log(err)
-    })
+    .catch(function (err) {
+      console.log(err);
+    });
 
-    return read_files
+  return read_files;
 }
 
 let updatefileSettings = function (language) {
@@ -83,35 +92,40 @@ let updatefileSettings = function (language) {
       files[i] = files[i].trim();
       let result = await invoke("write_file_settings", {
         language: language,
-        inputPath: "C:\\Projects\\Tauri\\test\\settings.json",
-        file: files[i],
+        inputPath: settings_path,
         operation: operation,
+        file: files[i],
       })
         .then()
         .catch(function (err) {
           console.log(err);
         });
-        console.log(result)
-        if (!result) {
-            alert("One of the files does not exist")
-            return
-        }
+      console.log(result);
+      if (!result) {
+        alert("One of the files does not exist");
+        return;
+      }
     }
+    displayfileSettings(language);
   };
 };
 
-/*const dummy = document.getElementById('dummy')
-dummy.addEventListener("click", readSettings("files", "python", null))*/
 
 // display current path settings
 async function displayPathSettings(language) {
   let selector = language + "-default";
-  let text = await readSettings(
-    "C:\\Projects\\Tauri\\test\\settings.json",
-    language,
-    "path"
-  );
+  let text = await readSettings(settings_path, language, "path");
+  console.log(text);
   document.getElementById(selector).innerHTML = "Current Path:" + text;
+}
+
+async function displayfileSettings(language) {
+  let selector = language + "-files";
+  let text = await readfileSettings(language, settings_path);
+  document.getElementById(selector).innerHTML = "Current Files:";
+  for (let i = 0; i < text.length; i++) {
+    document.getElementById(selector).innerHTML += text[i] + "," + " ";
+  }
 }
 
 // update settings based on language selected
@@ -132,7 +146,7 @@ let updateSettings = function (language) {
     invoke("write_to_path_settings", {
       language: language,
       contents: result,
-      settingType: "path",
+      inputPath: settings_path,
       key: "path",
     });
     displayPathSettings(language);
@@ -232,11 +246,7 @@ let ProjectSubmission = function (language) {
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
     // get default path from settings
-    let path = await readSettings(
-      "C:\\Projects\\Tauri\\test\\settings.json",
-      language,
-      "path"
-    );
+    let path = await readSettings(settings_path, language, "path");
 
     let selector = "chosen-folder-" + language;
     const chosen_folder = document.getElementById(selector);
@@ -247,7 +257,7 @@ let ProjectSubmission = function (language) {
         path = new_path;
       }
     }
-    console.log(language);
+
     // checks for javascript language to avoid key error on react
     if (language == "javascript") {
       if (formProps["react"] == "on") {
@@ -276,11 +286,31 @@ let ProjectSubmission = function (language) {
           );
           return;
         }
-        // send message and stop loop as everything else is handled by react
-        alert(`React project ${formProps["project-name"]} created at ${path}`);
+          
+      }
+    }
+
+    // crete cargo project if in rust 
+    if (language =="rust" & formProps['cargo'] == 'on') {
+      const cargo_command = await new Command(
+        "cargo-new",
+        ["new", formProps["project-name"]],
+        { cwd: path }
+      )
+        .execute()
+        .catch(function (err) {
+          console.log(err);
+        });
+        console.log(cargo_command)
+      // alert if project not created
+      if (cargo_command['code'] == 101) {
+        alert(
+          " Cargo project could not be created / Project already exists"
+        );
         return;
       }
     }
+
     // make a directory with the project name
     invoke("make_dir", { dir: formProps["project-name"], path: path });
     // create a file in the new directory
@@ -289,18 +319,17 @@ let ProjectSubmission = function (language) {
     let file_create_list = [];
 
     if (language == "python") {
-      file_create_list = await readfileSettings(
-        "python",
-        "C:\\Projects\\Tauri\\test\\settings.json"
-      ).then();
+      file_create_list = await readfileSettings("python", settings_path).then();
     }
     if (language == "javascript") {
-      file_create_list = await readfileSettings(
-        "javascript",
-        "C:\\Projects\\Tauri\\test\\settings.json"
-      ).then();
+      file_create_list = await readfileSettings("javascript",settings_path).then();
     }
-    console.log(file_create_list)
+
+    if (language == "rust") {
+      file_create_list = await readfileSettings("rust", settings_path).then();
+    }
+
+    console.log(file_create_list);
     for (let i = 0; i < file_create_list.length; i++) {
       let file_creation = await invoke("write_file", {
         fileName: file_create_list[i],
@@ -403,21 +432,25 @@ let ProjectSubmission = function (language) {
     // set new_path back to default
     new_path = "";
 
+    // React alert 
+    if (language == "javascript" & formProps['react'] == 'on') {
+      alert(`React project ${formProps["project-name"]} created at ${path}`);
+    }
+    // Cargio alert
+    else if (language == "rust" & formProps['cargo'] == 'on') {
+      alert(`Cargo project ${formProps["project-name"]} created at ${path}`);
+    }
     //alert that project was made
-    alert(
-      `Project ${formProps["project-name"]} was successfully created at the path ${project_path}`
-    );
+    else {
+      alert(`Project ${formProps["project-name"]} was successfully created at the path ${project_path}`)
+    };
   };
 };
 
 let showFiles = function (language) {
   return async function asyncFiles(e) {
     e.preventDefault();
-    let path = await readSettings(
-      "C:\\Projects\\Tauri\\test\\settings.json",
-      language,
-      "path"
-    );
+    let path = await readSettings(settings_path, language, "path");
     let result = await open_dir({
       defaultPath: path,
       directory: true,
@@ -459,16 +492,28 @@ async function openVSCode(e) {
   console.log(vscode_open.execute());
 }
 
-// handling react hide
-const react = document.getElementById("react");
-react.addEventListener("click", hideGit);
 
-function hideGit() {
-  const git_setup = document.querySelector(".git-setup");
-  console.log(git_setup);
-  if (git_setup.classList.contains("hidden")) {
-    git_setup.classList.remove("hidden");
-  } else {
-    git_setup.classList.add("hidden");
-  }
+/*Hiding Elements*/
+
+const trigger_hide = [['react', "javascript"], ['cargo', "rust"]]
+
+let hideSections = function (language) {
+  return function hiddenStuff(e) {
+    let selector = "git-setup-" + language;
+    let hidden_element = document.getElementById(selector);
+    if (hidden_element.classList.contains("hidden")) {
+      hidden_element.classList.remove("hidden");
+    } else {
+      hidden_element.classList.add("hidden");
+    }
+  };
+};
+
+
+for(let i=0; i<trigger_hide.length; i++) {
+  let element = document.getElementById(trigger_hide[i][0])
+  element.addEventListener("click", hideSections(trigger_hide[i][1]))
 }
+
+
+

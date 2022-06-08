@@ -145,9 +145,33 @@ body {
 }
 
 .path-settings, .file_settings {
-  display: flex;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   margin-top: 60px;
+  grid-auto-flow: column;
+}
+
+.delete-file {
+  margin: 15px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.delete-file input {
+  margin: 10px 0 !important;
+}
+
+.delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.set-files {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .setting-block {
@@ -157,6 +181,7 @@ body {
   box-shadow: 2px 4px 2px 0 rgba(0, 0, 0, 0.3);
   display: inline-block;
   padding: 5px;
+  max-width: 1fr;
 }
 .setting-block input {
   border-radius: 8px;
@@ -166,9 +191,13 @@ body {
   background-color: var(--button-hover-color);
 }
 
-.current-default {
+.current-default, .current-list {
   margin-top: 20px;
   color: var(--display-text-color);
+}
+
+.current-list {
+  overflow-wrap: break-word;
 }
 
 .content {

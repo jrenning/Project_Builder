@@ -31,6 +31,9 @@
         <button class="button" data-id="javascript">
           Javascript
         </button>
+        <button class="button" data-id="rust">
+          Rust
+        </button>
       </div>
     </div>
     <div class="settings">
@@ -79,6 +82,13 @@
           <h4 id="javascript-default"></h4>
         </div>
       </form>
+      <form class="setting-block" id="settings-submit-rust">
+        <label>Set Rust default path</label>
+        <input type="submit" value="Choose Path">
+        <div class="current-default">
+          <h4 id="rust-default"></h4>
+        </div>
+      </form>
     </div>
   </section>
   <section class="section files" id="files">
@@ -91,20 +101,47 @@
     <div class="file_settings">
       <form class="setting-block" id="files-submit-python">
         <label>Set Python file list</label>
-        <input type="text" name="file-setting"></input>
-        <input type="checkbox" name="delete-file">Delete Entry?</input>
-        <input type="submit" value="Set Files">
+        <div class="delete-file">
+          <input type="text" name="file-setting"></input>
+        </div>
+        <div class="delete">
+          <input type="checkbox" name="delete-file">Delete Entry?</input>
+        </div>
+        <div class="set-files">
+          <input type="submit" value="Set Files">
+        </div>
         <div class="current-list">
-          <h4 id="python-list"></h4>
+          <h4 id="python-files"></h4>
         </div>
       </form>
       <form class="setting-block" id="files-submit-javascript">
         <label>Set Javascript file list</label>
-        <input type="text" name="file_setting"></input>
-        <input type="checkbox" name="delete-file">Delete Entry?</input>
-        <input type="submit" value="Set Files">
+        <div class="delete-file">
+          <input type="text" name="file-setting"></input>
+         </div>
+        <div class="delete">
+          <input type="checkbox" name="delete-file">Delete Entry?</input>
+         </div>
+        <div class="set-files">
+          <input type="submit" value="Set Files">
+        </div>
         <div class="current-list">
-          <h4 id="javascript-list"></h4>
+          <h4 id="javascript-files"></h4>
+        </div>
+      </form>
+      <form class="setting-block" id="files-submit-rust">
+        <label>Set Rust file list</label>
+        <div class="delete-file">
+          <input type="text" name="file-setting"></input>
+        </div>
+        <div class="delete">
+          <input type="checkbox" name="delete-file">Delete Entry?</input>
+        </div>
+        <div class="set-files">
+          <input type="submit" value="Set Files">
+        </div>
+        <div class="current-list">
+          <h4 id="rust-files"></h4>
         </div>
       </form>
     </div>
@@ -169,7 +206,7 @@
           <h6 id="chosen-folder-javascript"></h6>
         </div>
         <br>
-        <div class="checkbox git-setup">
+        <div class="checkbox git-setup" id="git-setup-javascript">
           <label>Git Setup</label>
           <input type="checkbox" name="git-setup">
         </div>
@@ -180,6 +217,48 @@
         <br>
         <div class="text-input github-link">
           <input type="text" name="github-link" placeholder="Github Link" pattern="((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?">
+        </div>
+        <br>
+        <div class="submit">
+          <input type="submit" value="Submit">
+        </div>
+      </form>
+    </div>
+    <div class="vscode">
+      <button class="vscode-open">Open VSCode</button>
+    </div>
+  </section>
+  <section class="section rust" id="rust">
+    <header class="landing-header">
+      <div class='back-arrow' data-id="back-arrow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <h1>Rust Project</h1>
+    </header>
+    <div class="content">
+      <form class="setup-form" id="submit-rust">
+        <div class="text-input">
+          <input type="text" name="project-name" placeholder="Project Name" required=true>
+        </div>
+        <br>
+        <div class="folder-select">
+          <label>Existing Folder</label>
+          <button id="folder-existing-rust">Pick Folder</button>
+          <h6 id="chosen-folder-rust"></h6>
+        </div>
+        <br>
+        <div class="checkbox git-setup" id="git-setup-rust">
+          <label>Git Setup</label>
+          <input type="checkbox" name="git-setup">
+        </div>
+        <div class="checkbox">
+          <label>Cargo</label>
+          <input type="checkbox" name="cargo" id="cargo">
+        </div>
+        <br>
+        <div class="text-input github-link">
+          <input type="text" name="github-link" placeholder="Github Link"
+            pattern="((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?">
         </div>
         <br>
         <div class="submit">

@@ -57,13 +57,15 @@ struct PathSettings {
 struct PathSetters {
   python: Vec<PathSettings>,
   javascript: Vec<PathSettings>,
+  rust: Vec<PathSettings>
 }
 
 // file settings 
 #[derive(Deserialize, Serialize, Debug)]
 struct FileSetters {
   python: Vec<String>,
-  javascript: Vec<String>
+  javascript: Vec<String>,
+  rust: Vec<String>
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -82,6 +84,7 @@ impl Index<&'_ str> for PathSetters {
     match s {
       "python" => &self.python,
       "javascript" => &self.javascript,
+      "rust" => &self.rust,
       _ => panic!("unknown field: {}", s),
     }
   }
@@ -93,6 +96,7 @@ impl IndexMut<&'_ str> for PathSetters {
     match s {
       "python" => &mut self.python,
       "javascript" => &mut self.javascript,
+      "rust" => &mut self.rust,
       _ => panic!("unknown field: {}", s),
     }
   }
@@ -128,6 +132,7 @@ impl Index<&'_ str> for FileSetters {
     match s {
       "python" => &self.python,
       "javascript" => &self.javascript,
+      "rust" => &self.rust,
       _ => panic!("unknown field: {}", s),
     }
   }
@@ -139,6 +144,7 @@ impl IndexMut<&'_ str> for FileSetters {
     match s {
       "python" => &mut self.python,
       "javascript" => &mut self.javascript,
+      "rust" => &mut self.rust,
       _ => panic!("unknown field: {}", s),
     }
   }
@@ -149,14 +155,13 @@ impl IndexMut<&'_ str> for FileSetters {
 // to the frontend so camelcase is used 
 #[allow(non_snake_case)]
 #[tauri::command]
-fn write_to_path_settings(key: String, contents: String, language: String) {
+fn write_to_path_settings(key: String, contents: String, language: String, inputPath: String) {
 
   // remember to change to right path 
-  let input_path = "C:\\Projects\\Tauri\\test\\settings.json";
 
   let mut settings = {
     // read from settings file in correct format specified by the structs
-    let settings = std::fs::read_to_string(&input_path).unwrap();
+    let settings = std::fs::read_to_string(&inputPath).unwrap();
     serde_json::from_str::<OverallSettings>(&settings).unwrap()
   };
 
@@ -164,7 +169,7 @@ fn write_to_path_settings(key: String, contents: String, language: String) {
 
 
   std::fs::write(
-  input_path,
+  inputPath,
   serde_json::to_string_pretty(&settings).unwrap()
   ).expect("Bad write to file");  
 
@@ -206,6 +211,7 @@ fn write_file_settings(language: String, inputPath: String, operation: String, f
   serde_json::from_str::<OverallSettings>(&file_settings).unwrap()
   };
 
+ 
   if operation == "add" {
     file_settings.file_structure_settings[&language].push(file.to_string());
   }
@@ -221,6 +227,7 @@ fn write_file_settings(language: String, inputPath: String, operation: String, f
   else {
     return false;
   }
+
 
   std::fs::write(
   inputPath,
