@@ -102,7 +102,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": ["../settings.json"],
       "shortDescription": "",
       "targets": "all",
       "windows": {

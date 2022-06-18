@@ -8,7 +8,18 @@ const shell = window.__TAURI__.shell;
 // languages supported
 const languages = ["python", "javascript", "rust"];
 
-const settings_path = "C:\\Projects\\Tauri\\test\\dist\\settings.json";
+
+async function getRoamingPath() {
+  
+  const data = await path_operations.dataDir().then().catch(function(err) {
+    console.log(err)
+  })
+
+  return data + "Project Builder\\_up_\\settings.json"
+}
+
+// dev path for settings
+//const settings_path = "C:\\Projects\\Tauri\\test\\dist\\settings.json";
 
 /* Basic Settings*/
 
@@ -46,6 +57,7 @@ function initializeSettings() {
 
 // get settings from settings.json
 async function readSettings(input_path, language, key) {
+
   const read_settings = await invoke("read_settings", {
     key: key,
     inputPath: input_path,
@@ -75,6 +87,9 @@ async function readfileSettings(language, input_path) {
 let updatefileSettings = function (language) {
   return async function asyncFileSet(e) {
     e.preventDefault();
+    const settings_path = await getRoamingPath()
+    console.log(settings_path)
+
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
     let files_input = formProps["file-setting"];
@@ -110,9 +125,9 @@ let updatefileSettings = function (language) {
   };
 };
 
-
 // display current path settings
 async function displayPathSettings(language) {
+  const settings_path = await getRoamingPath();
   let selector = language + "-default";
   let text = await readSettings(settings_path, language, "path");
   console.log(text);
@@ -120,6 +135,7 @@ async function displayPathSettings(language) {
 }
 
 async function displayfileSettings(language) {
+  const settings_path = await getRoamingPath()
   let selector = language + "-files";
   let text = await readfileSettings(language, settings_path);
   document.getElementById(selector).innerHTML = "Current Files:";
@@ -132,6 +148,7 @@ async function displayfileSettings(language) {
 let updateSettings = function (language) {
   return async function asyncSettings(e) {
     e.preventDefault();
+    const settings_path = await getRoamingPath()
     path = "C:/";
     let result = await open_dir({
       defaultPath: path,
@@ -242,6 +259,9 @@ function initializeProjectForm() {
 let ProjectSubmission = function (language) {
   return async function asyncSubmission(e) {
     e.preventDefault();
+
+    //define settings path 
+    const settings_path = await getRoamingPath()
     // get form data
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
@@ -286,12 +306,11 @@ let ProjectSubmission = function (language) {
           );
           return;
         }
-          
       }
     }
 
-    // crete cargo project if in rust 
-    if (language =="rust" & formProps['cargo'] == 'on') {
+    // crete cargo project if in rust
+    if ((language == "rust") & (formProps["cargo"] == "on")) {
       const cargo_command = await new Command(
         "cargo-new",
         ["new", formProps["project-name"]],
@@ -301,12 +320,10 @@ let ProjectSubmission = function (language) {
         .catch(function (err) {
           console.log(err);
         });
-        console.log(cargo_command)
+      console.log(cargo_command);
       // alert if project not created
-      if (cargo_command['code'] == 101) {
-        alert(
-          " Cargo project could not be created / Project already exists"
-        );
+      if (cargo_command["code"] == 101) {
+        alert(" Cargo project could not be created / Project already exists");
         return;
       }
     }
@@ -322,7 +339,10 @@ let ProjectSubmission = function (language) {
       file_create_list = await readfileSettings("python", settings_path).then();
     }
     if (language == "javascript") {
-      file_create_list = await readfileSettings("javascript",settings_path).then();
+      file_create_list = await readfileSettings(
+        "javascript",
+        settings_path
+      ).then();
     }
 
     if (language == "rust") {
@@ -432,24 +452,27 @@ let ProjectSubmission = function (language) {
     // set new_path back to default
     new_path = "";
 
-    // React alert 
-    if (language == "javascript" & formProps['react'] == 'on') {
+    // React alert
+    if ((language == "javascript") & (formProps["react"] == "on")) {
       alert(`React project ${formProps["project-name"]} created at ${path}`);
     }
     // Cargio alert
-    else if (language == "rust" & formProps['cargo'] == 'on') {
+    else if ((language == "rust") & (formProps["cargo"] == "on")) {
       alert(`Cargo project ${formProps["project-name"]} created at ${path}`);
     }
     //alert that project was made
     else {
-      alert(`Project ${formProps["project-name"]} was successfully created at the path ${project_path}`)
-    };
+      alert(
+        `Project ${formProps["project-name"]} was successfully created at the path ${project_path}`
+      );
+    }
   };
 };
 
 let showFiles = function (language) {
   return async function asyncFiles(e) {
     e.preventDefault();
+    const settings_path = await getRoamingPath()
     let path = await readSettings(settings_path, language, "path");
     let result = await open_dir({
       defaultPath: path,
@@ -492,10 +515,12 @@ async function openVSCode(e) {
   console.log(vscode_open.execute());
 }
 
-
 /*Hiding Elements*/
 
-const trigger_hide = [['react', "javascript"], ['cargo', "rust"]]
+const trigger_hide = [
+  ["react", "javascript"],
+  ["cargo", "rust"],
+];
 
 let hideSections = function (language) {
   return function hiddenStuff(e) {
@@ -509,11 +534,7 @@ let hideSections = function (language) {
   };
 };
 
-
-for(let i=0; i<trigger_hide.length; i++) {
-  let element = document.getElementById(trigger_hide[i][0])
-  element.addEventListener("click", hideSections(trigger_hide[i][1]))
+for (let i = 0; i < trigger_hide.length; i++) {
+  let element = document.getElementById(trigger_hide[i][0]);
+  element.addEventListener("click", hideSections(trigger_hide[i][1]));
 }
-
-
-
