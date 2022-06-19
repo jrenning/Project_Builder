@@ -223,6 +223,23 @@ body {
   border-radius: 8px;
 }
 
+input[type=submit] {
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+input[type=submit]:hover {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.checkbox {
+  margin-top: 1rem;
+}
+
+.text-input {
+  margin-top: 1rem;
+}
+
 .vscode {
   display: flex;
   align-items: center;

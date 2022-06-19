@@ -1,7 +1,7 @@
 // global path variable that is used instead of the predefined project paths
 
-import {languages, invoke, Command} from './consts.js'
-import {getRoamingPath, readSettings, readfileSettings} from "./settings.js"
+import { languages, invoke, Command } from "./consts.js";
+import { getRoamingPath, readSettings, readfileSettings } from "./settings.js";
 
 let new_path = "";
 let last_path_used = "";
@@ -116,7 +116,6 @@ let ProjectSubmission = function (language) {
       file_create_list = await readfileSettings("rust", settings_path).then();
     }
 
-    console.log(file_create_list);
     for (let i = 0; i < file_create_list.length; i++) {
       let file_creation = await invoke("write_file", {
         fileName: file_create_list[i],
@@ -147,6 +146,33 @@ let ProjectSubmission = function (language) {
         .catch(function (err) {
           console.log(err);
         });
+    }
+    if (formProps["packages"]) {
+      let packages = formProps["packages"];
+      packages = packages.split(",");
+      // initialize
+      const init_command = await new Command("poetry", ["init", "-n"], {
+        cwd: project_path,
+      })
+        .execute()
+        .catch(function (err) {
+          console.log(err);
+        });
+      // install packages using poetry
+      for (let i = 0; i < packages.length; i++) {
+        packages[i] = packages[i].trim();
+        const install_command = await new Command(
+          "poetry-add",
+          ["add", packages[i]],
+          {
+            cwd: project_path,
+          }
+        )
+          .execute()
+          .catch(function (err) {
+            console.log(err);
+          });
+      }
     }
     if (formProps["git-setup"] == "on") {
       console.log("Trying to set up git...");
@@ -256,4 +282,4 @@ let showFiles = function (language) {
   };
 };
 
-export {initializeProjectForm, last_path_used, new_path}
+export { initializeProjectForm, last_path_used, new_path };

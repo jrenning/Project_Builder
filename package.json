@@ -1,12 +1,14 @@
 {
   "name": "project_builder",
   "scripts": {
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "jest"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.0.0-rc.5"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.0.0-rc.11"
+    "@tauri-apps/cli": "^1.0.0-rc.11",
+    "jest": "^28.1.1"
   }
 }

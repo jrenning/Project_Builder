@@ -73,8 +73,31 @@
             "name": "cargo-new",
             "cmd": "cargo",
             "args": ["new", { "validator": "\\S+" }]
+          },
+          {
+            "name": "activate-env",
+            "cmd": "env\\Scripts\\activate.bat",
+            "args": false
+
+          },
+          {
+            "name": "pip",
+            "cmd": "pip",
+            "args": ["install", { "validator": "\\S+" }]
+
+          },
+          {
+            "name": "poetry-add",
+            "cmd": "C:\\Users\\jacka\\AppData\\Roaming\\poetry\\bin\\poetry.bat",
+            "args": ["add", { "validator": "\\S+" }]
+          },
+          {
+            "name": "poetry",
+            "cmd": "C:\\Users\\jacka\\AppData\\Roaming\\poetry\\bin\\poetry.bat",
+            "args": ["init", "-n"]
           }
           ],
+
         "sidecar": true
       }
     },
