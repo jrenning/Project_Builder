@@ -1,6 +1,6 @@
 // global path variable that is used instead of the predefined project paths
 
-import { languages, invoke, Command } from "./consts.js";
+import { languages, invoke, Command, open_dir } from "./consts.js";
 import { getRoamingPath, readSettings, readfileSettings } from "./settings.js";
 
 let new_path = "";
